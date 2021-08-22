@@ -363,6 +363,8 @@ double VelocityProfileGenerator::calc_distance(const double& v_i,
     // acceleration/deceleration "a". HINT look at the description of this
     // function. Make sure you handle div by 0
     d = 0;  // <- Update
+    
+    d = (v_f*v_f-v_i*v_i)/(2.0 * a);
   }
   return d;
 }
@@ -386,6 +388,7 @@ double VelocityProfileGenerator::calc_final_speed(const double& v_i,
   // infinity
 
   double disc = 0;  // <- Fix this
+  disc = v_i*v_i + 2*a* d;
   if (disc <= 0.0) {
     v_f = 0.0;
   } else if (disc == std::numeric_limits<double>::infinity() ||
