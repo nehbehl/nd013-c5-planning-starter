@@ -79,7 +79,7 @@ double BehaviorPlannerFSM::get_look_ahead_distance(const State& ego_state) {
   // using a comfortable deceleration.
   auto look_ahead_distance = 1.0;  // <- Fix This
 
-  float time = 3.0;
+  float time = _lookahead_time;
   auto velocity_u = ego_state.velocity/velocity_mag;
   float acceleration_x = velocity_u.x * ego_state.acceleration.x;
   float acceleration_y = velocity_u.y * ego_state.acceleration.y;
@@ -87,7 +87,9 @@ double BehaviorPlannerFSM::get_look_ahead_distance(const State& ego_state) {
   
   float total_acc = acceleration_x + acceleration_y + acceleration_z;
   
-  look_ahead_distance = (total_acc + velocity_mag ) * time ;
+  //look_ahead_distance = (total_acc + velocity_mag ) * time  
+  //made changes as per reviewer comments;
+  look_ahead_distance = velocity_mag * time + 0.5 * total_acc * time * time;
   // LOG(INFO) << "Calculated look_ahead_distance: " << look_ahead_distance;
 
   
@@ -149,8 +151,8 @@ State BehaviorPlannerFSM::state_transition(const State& ego_state, State goal,
       // use cosine and sine to get x and y
       //
       auto ang = goal.rotation.yaw + M_PI;
-      goal.location.x += 1.0;  // <- Fix This
-      goal.location.y += 1.0;  // <- Fix This
+      //goal.location.x += 1.0;  // <- Fix This
+      //goal.location.y += 1.0;  // <- Fix This
 
       
       goal.location.x = goal.location.x + cos(ang) * _stop_line_buffer;
@@ -160,9 +162,9 @@ State BehaviorPlannerFSM::state_transition(const State& ego_state, State goal,
       //          << goal.location.y;
 
       // TODO-goal speed at stopping point: What should be the goal speed??
-      goal.velocity.x = 1.0;  // <- Fix This
-      goal.velocity.y = 1.0;  // <- Fix This
-      goal.velocity.z = 1.0;  // <- Fix This
+     // goal.velocity.x = 1.0;  // <- Fix This
+      //goal.velocity.y = 1.0;  // <- Fix This
+      //goal.velocity.z = 1.0;  // <- Fix This
       goal.velocity.x = 0;  // Fixed
       goal.velocity.y = 0;  // Fixed
       goal.velocity.z = 0;  // Fixed
